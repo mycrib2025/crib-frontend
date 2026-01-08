@@ -1,0 +1,179 @@
+body {
+  margin: 0;
+  background: black;
+}
+
+/* ========================= */
+/* 🔌 WORLD TOGGLES */
+/* ========================= */
+
+.stars,
+.clouds,
+.auroras {
+  opacity: 0;
+  transition: opacity 1.5s ease;
+}
+
+/* ========================= */
+/* 🌌 ENABLE WORLD ELEMENTS */
+/* ========================= */
+
+.stars-on .stars {
+  opacity: 0.6;
+}
+
+.clouds-on .clouds {
+  opacity: 0.4;
+}
+
+.aurora-on .auroras {
+  opacity: 0.7;
+}
+
+/* ========================= */
+/* 🌍 WORLD ROOT */
+/* ========================= */
+
+.crib-world {
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+  transition: background 1.5s ease;
+}
+
+.crib-content {
+  position: relative;
+  z-index: 10;
+}
+
+/* ========================= */
+/* 🧱 BASE LAYER */
+/* ========================= */
+
+.crib-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+/* ========================= */
+/* ⭐ STARS */
+/* ========================= */
+
+.stars {
+  background:
+    radial-gradient(1px 1px at 10% 20%, white, transparent),
+    radial-gradient(1px 1px at 30% 80%, white, transparent),
+    radial-gradient(2px 2px at 50% 40%, white, transparent),
+    radial-gradient(1px 1px at 70% 60%, white, transparent),
+    radial-gradient(2px 2px at 90% 10%, white, transparent);
+  background-size: 300px 300px;
+  opacity: 0.6;
+  animation: starsMove 120s linear infinite;
+  z-index: 1;
+}
+
+@keyframes starsMove {
+  from { background-position: 0 0; }
+  to { background-position: 1000px 1000px; }
+}
+
+/* ========================= */
+/* ☁️ CLOUDS */
+/* ========================= */
+
+.clouds {
+  background:
+    radial-gradient(circle at 30% 30%, rgba(255,255,255,0.08), transparent 60%),
+    radial-gradient(circle at 70% 60%, rgba(255,255,255,0.06), transparent 60%);
+  filter: blur(60px);
+  animation: cloudsDrift 90s ease-in-out infinite;
+  z-index: 2;
+}
+
+@keyframes cloudsDrift {
+  0% { transform: translateX(0); }
+  50% { transform: translateX(-200px); }
+  100% { transform: translateX(0); }
+}
+
+/* ========================= */
+/* 🌈 AURORAS */
+/* ========================= */
+
+.auroras {
+  background:
+    linear-gradient(
+      120deg,
+      rgba(0,255,200,0.15),
+      rgba(138,43,226,0.15),
+      rgba(255,105,180,0.12)
+    );
+  mix-blend-mode: screen;
+  filter: blur(80px);
+  opacity: 0.7;
+  animation: auroraFlow 25s ease-in-out infinite;
+  z-index: 3;
+}
+
+@keyframes auroraFlow {
+  0% { transform: translateX(-20%) rotate(0deg); }
+  50% { transform: translateX(20%) rotate(6deg); }
+  100% { transform: translateX(-20%) rotate(0deg); }
+}
+
+/* ========================= */
+/* 💭 FEELINGS */
+/* ========================= */
+
+.feelings {
+  background: radial-gradient(circle, rgba(255,255,255,0.12), transparent 60%);
+  animation: glow 6s ease-in-out infinite;
+  z-index: 4;
+}
+
+/* ========================= */
+/* 🌙 DREAMS */
+/* ========================= */
+
+.dreams {
+  background: radial-gradient(circle at 20% 40%, rgba(255,255,255,0.08), transparent 50%);
+  filter: blur(40px);
+  animation: drift 30s ease-in-out infinite;
+  z-index: 5;
+}
+
+/* ========================= */
+/* 🎭 MOODS */
+/* ========================= */
+
+.mood-default {
+  background: linear-gradient(180deg, #020617, #000);
+}
+
+.mood-dreamy {
+  background: linear-gradient(180deg, #312e81, #020617);
+}
+
+.mood-fantasy {
+  background: linear-gradient(180deg, #581c87, #020617);
+}
+
+.mood-happy {
+  background: linear-gradient(180deg, #fb8500, #ffb703);
+}
+
+/* ========================= */
+/* 🎞 ANIMATIONS */
+/* ========================= */
+
+@keyframes glow {
+  0%,100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+@keyframes drift {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-80px); }
+  100% { transform: translateY(0); }
+}

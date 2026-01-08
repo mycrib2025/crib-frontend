@@ -1,0 +1,35 @@
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 24px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 0 40px rgba(255, 255, 255, 0.05);
+}
+
+.profile-avatar {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(255,255,255,0.2);
+}
+
+.profile-info h1 {
+  font-size: 1.8rem;
+  margin: 0;
+}
+
+.profile-bio {
+  opacity: 0.8;
+  margin: 6px 0;
+}
+
+.profile-stats {
+  display: flex;
+  gap: 16px;
+  font-size: 0.9rem;
+  opacity: 0.85;
+}

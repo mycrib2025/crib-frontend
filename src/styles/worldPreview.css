@@ -1,0 +1,61 @@
+.world-preview {
+  border-radius: 16px;
+  padding: 16px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.world-preview:hover {
+  transform: scale(1.05);
+}
+
+.world-preview.empty {
+  opacity: 0.6;
+  text-align: center;
+}
+
+.world-layers div {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+/* ⭐ STARS */
+.preview-stars {
+  background:
+    radial-gradient(1px 1px at 20% 30%, white, transparent),
+    radial-gradient(1px 1px at 60% 80%, white, transparent);
+  background-size: 200px 200px;
+  opacity: 0.6;
+}
+
+/* ☁️ CLOUDS */
+.preview-clouds {
+  background: radial-gradient(circle, rgba(255,255,255,0.1), transparent 70%);
+  filter: blur(40px);
+}
+
+/* 🌈 AURORA */
+.preview-auroras {
+  background: linear-gradient(
+    120deg,
+    rgba(0,255,200,0.15),
+    rgba(138,43,226,0.15)
+  );
+  filter: blur(60px);
+  mix-blend-mode: screen;
+}
+
+.world-info {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  padding: 16px;
+  background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+  color: white;
+}
+
+.enter-text {
+  font-size: 0.9rem;
+  opacity: 0.8;
+}

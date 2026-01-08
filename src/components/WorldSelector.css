@@ -1,0 +1,76 @@
+.world-selector {
+  margin-top: 1.5rem;
+}
+
+.world-selector h3 {
+  margin-bottom: 0.75rem;
+  color: white;
+}
+
+.world-list {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+}
+
+.world-card {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: center;
+  color: white;
+  min-width: 100px;
+}
+
+.world-card.active .world-preview {
+  outline: 3px solid #ffb703;
+  box-shadow: 0 0 12px rgba(255,183,3,0.6);
+}
+
+.world-preview {
+  width: 90px;
+  height: 120px;
+  border-radius: 14px;
+  position: relative;
+  overflow: hidden;
+}
+
+.world-name {
+  display: block;
+  margin-top: 6px;
+  font-size: 0.85rem;
+}
+
+/* Mini layers */
+.mini {
+  position: absolute;
+  inset: 0;
+}
+
+.mini.stars {
+  background:
+    radial-gradient(1px 1px at 20% 30%, white, transparent),
+    radial-gradient(1px 1px at 70% 60%, white, transparent);
+  opacity: 0.6;
+}
+
+.mini.clouds {
+  background: rgba(255,255,255,0.05);
+}
+
+.mini.auroras {
+  background: linear-gradient(120deg,
+    rgba(0,255,200,0.25),
+    rgba(138,43,226,0.25)
+  );
+}
+
+/* Create card */
+.world-card.create .create-preview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  background: rgba(255,255,255,0.1);
+}
