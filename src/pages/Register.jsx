@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import api from "../api/api"; // ✅ correct API usage
+import api from "../api/api";
 
 export default function Register() {
   const navigate = useNavigate();
@@ -19,12 +19,16 @@ export default function Register() {
     e.preventDefault();
 
     try {
-      await api.post("/auth/register", form); // ✅ clean API call
+      await api.post("/auth/register", form);
       alert("Profile created! 🌍");
-      navigate("/login"); // ✅ redirect after register
+      navigate("/login");
     } catch (error) {
+      if (error.response?.status === 409) {
+        alert(error.response.data.message);
+      } else {
+        alert("Registration failed");
+      }
       console.error(error);
-      alert("Registration failed");
     }
   };
 
