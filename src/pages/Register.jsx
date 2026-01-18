@@ -1,7 +1,10 @@
 import { useState } from "react";
-import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import api from "../api/api"; // ✅ correct API usage
 
 export default function Register() {
+  const navigate = useNavigate();
+
   const [form, setForm] = useState({
     username: "",
     email: "",
@@ -16,8 +19,9 @@ export default function Register() {
     e.preventDefault();
 
     try {
-      await axios.post("http://localhost:5000/api/auth/register", form);
+      await api.post("/auth/register", form); // ✅ clean API call
       alert("Profile created! 🌍");
+      navigate("/login"); // ✅ redirect after register
     } catch (error) {
       console.error(error);
       alert("Registration failed");
@@ -25,31 +29,38 @@ export default function Register() {
   };
 
   return (
-    <div className="register-page">
-      <h2>Create Your Crib</h2>
+    <div className="min-h-screen flex items-center justify-center">
+      <div className="bg-white p-6 rounded-lg shadow w-full max-w-md">
+        <h2 className="text-2xl font-bold mb-4">Create Your Crib</h2>
 
-      <form onSubmit={handleSubmit}>
-        <input
-          name="username"
-          placeholder="Username"
-          onChange={handleChange}
-        />
+        <form onSubmit={handleSubmit} className="space-y-3">
+          <input
+            name="username"
+            placeholder="Username"
+            onChange={handleChange}
+            className="w-full border p-2 rounded"
+          />
 
-        <input
-          name="email"
-          placeholder="Email"
-          onChange={handleChange}
-        />
+          <input
+            name="email"
+            placeholder="Email"
+            onChange={handleChange}
+            className="w-full border p-2 rounded"
+          />
 
-        <input
-          name="password"
-          type="password"
-          placeholder="Password"
-          onChange={handleChange}
-        />
+          <input
+            name="password"
+            type="password"
+            placeholder="Password"
+            onChange={handleChange}
+            className="w-full border p-2 rounded"
+          />
 
-        <button type="submit">Enter Crib</button>
-      </form>
+          <button className="w-full bg-black text-white py-2 rounded">
+            Enter Crib
+          </button>
+        </form>
+      </div>
     </div>
   );
 }
