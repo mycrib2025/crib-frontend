@@ -1,6 +1,9 @@
-const API_URL = "http://localhost:5000/api/users";
+import api from "../lib/api";
 
 import axios from "axios";
+
+export const getUserProfile = (id) =>
+  api.get(`/users/profile/${id}`);
 
 export const getFollowers = (username) =>
   axios.get(`/api/users/${username}/followers`);

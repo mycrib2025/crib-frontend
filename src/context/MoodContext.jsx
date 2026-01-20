@@ -1,5 +1,6 @@
 import { createContext, useContext, useState } from "react";
 import axios from "axios";
+import api from "../lib/api";
 
 const MoodContext = createContext();
 
@@ -12,9 +13,9 @@ export const MoodProvider = ({ children }) => {
 
     // Optional backend save (can fail safely)
     try {
-      await axios.post("http://localhost:5000/api/moods", {
-        mood: newMood,
-      });
+      await api.post("/moods", {
+  mood,
+});
     } catch (error) {
       console.warn("MOOD SAVE FAILED (safe to ignore for now)");
     }
