@@ -11,8 +11,8 @@ export default function WorldPreview({ userId }) {
   useEffect(() => {
     if (!userId) return;
 
-    axios
-      .get(`http://localhost:5000/api/worlds/user/${userId}`)
+    api
+      .get(`/worlds/user/${userId}`)
       .then((res) => {
         // user may have multiple worlds later
         setWorld(res.data[0]);

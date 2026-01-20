@@ -1,49 +1,51 @@
 import { useEffect, useState, useRef } from "react";
 import { io } from "socket.io-client";
-import axios from "axios";
+import api from "../api/api";
 
 export default function WorldChat({ worldId }) {
   const [messages, setMessages] = useState([]);
   const [text, setText] = useState("");
-
   const socketRef = useRef(null);
 
   const token = localStorage.getItem("token");
   const currentUserId = localStorage.getItem("userId");
 
   useEffect(() => {
-    // connect socket
-    socketRef.current = io("http://localhost:5000", {
-      auth: { token }
-    });
+    if (!worldId || !token) return;
+
+    // CONNECT SOCKET
+    socketRef.current = io(
+      import.meta.env.VITE_API_URL.replace("/api", ""),
+      { auth: { token } }
+    );
 
     socketRef.current.emit("join-world", { worldId });
 
-    socketRef.current.on("worldMessage", msg => {
-      setMessages(prev => [...prev, msg]);
+    socketRef.current.on("world-message", (msg) => {
+      setMessages((prev) => [...prev, msg]);
     });
 
-    // load history
-    axios
-      .get(`http://localhost:5000/api/world-chat/${worldId}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      })
-      .then(res => setMessages(res.data))
+    // LOAD CHAT HISTORY
+    api
+      .get(`/world-chat/${worldId}`)
+      .then((res) => setMessages(res.data))
       .catch(console.error);
 
     return () => socketRef.current.disconnect();
-  }, [worldId]);
+  }, [worldId, token]);
 
   const sendMessage = async () => {
     if (!text.trim()) return;
 
-    await axios.post(
-      `http://localhost:5000/api/world-chat/${worldId}`,
-      { message: text },
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
+    try {
+      await api.post(`/world-chat/${worldId}`, {
+        message: text,
+      });
 
-    setText("");
+      setText("");
+    } catch (err) {
+      console.error("SEND MESSAGE ERROR", err);
+    }
   };
 
   return (
@@ -52,7 +54,7 @@ export default function WorldChat({ worldId }) {
 
       {/* MESSAGES */}
       <div className="h-64 overflow-y-auto space-y-3 pr-2">
-        {messages.map(msg => {
+        {messages.map((msg) => {
           const isMe = msg.sender?._id === currentUserId;
 
           return (
@@ -99,10 +101,10 @@ export default function WorldChat({ worldId }) {
       <div className="flex gap-2 mt-3">
         <input
           value={text}
-          onChange={e => setText(e.target.value)}
+          onChange={(e) => setText(e.target.value)}
           className="flex-1 px-4 py-2 rounded-full bg-black/60 text-white outline-none"
           placeholder="Say something..."
-          onKeyDown={e => e.key === "Enter" && sendMessage()}
+          onKeyDown={(e) => e.key === "Enter" && sendMessage()}
         />
         <button
           onClick={sendMessage}

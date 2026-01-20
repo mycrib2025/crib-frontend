@@ -2,46 +2,39 @@ import "../styles/cribWorld.css";
 import PulseLines from "./PulseLines";
 import { useMood } from "../context/MoodContext";
 import { useEffect, useState } from "react";
-import axios from "axios";
-import useWorldSync from "../hooks/useWorldSync";
+import api from "../api/api";
 
 export default function CribWorld({ children, userId }) {
   const { mood } = useMood();
   const [world, setWorld] = useState(null);
 
+  /* -------- LOAD WORLD -------- */
   useEffect(() => {
     if (!userId) return;
 
-    axios
-      .get(`http://localhost:5000/api/worlds/user/${userId}`)
-      .then(res => setWorld(res.data[0]))
-      .catch(err => console.error("WORLD LOAD ERROR", err));
+    api
+      .get(`/worlds/user/${userId}`)
+      .then((res) => setWorld(res.data[0]))
+      .catch((err) => console.error("WORLD LOAD ERROR", err));
   }, [userId]);
 
+  /* -------- SYNC WORLD -------- */
   const syncWorld = async (data) => {
     if (!world?._id) return;
 
     try {
-      const res = await axios.put(
-        `http://localhost:5000/api/worlds/${world._id}`,
-        data
-      );
+      const res = await api.put(`/worlds/${world._id}`, data);
       setWorld(res.data);
     } catch (err) {
       console.error("WORLD SYNC ERROR", err);
     }
   };
 
+  /* -------- MOOD → WORLD -------- */
   useEffect(() => {
     if (!world?._id) return;
     if (world.mood === mood) return;
 
-    useEffect(() => {
-    if (!world?._id) return;
-    if (world.mood === mood) return;
-
-    updateWorld({ mood });
-  }, [mood, world]);
     syncWorld({ mood });
   }, [mood, world]);
 
@@ -56,6 +49,7 @@ export default function CribWorld({ children, userId }) {
       {world?.stars && <div className="crib-layer stars" />}
       {world?.clouds && <div className="crib-layer clouds" />}
       {world?.auroras && <div className="crib-layer auroras" />}
+
       <div className="crib-layer feelings" />
       <div className="crib-layer dreams" />
 
