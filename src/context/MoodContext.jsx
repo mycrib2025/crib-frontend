@@ -1,6 +1,5 @@
 import { createContext, useContext, useState } from "react";
-import axios from "axios";
-import api from "../lib/api";
+import api from "../api/api";
 
 const MoodContext = createContext();
 

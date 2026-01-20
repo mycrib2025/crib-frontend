@@ -14,7 +14,7 @@ export default function FollowRequests() {
     const fetchRequests = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:5000/api/users/${userId}/follow-requests`
+          api.get("/users/...")
         );
         setRequests(res.data);
       } catch (err) {
@@ -29,7 +29,7 @@ export default function FollowRequests() {
 
   const accept = async (requesterId) => {
     await axios.post(
-      `http://localhost:5000/api/users/${userId}/accept-follow`,
+      api.post("/users/..."),
       { requesterId }
     );
     setRequests(prev => prev.filter(u => u._id !== requesterId));
@@ -37,7 +37,7 @@ export default function FollowRequests() {
 
   const reject = async (requesterId) => {
     await axios.post(
-      `http://localhost:5000/api/users/${userId}/reject-follow`,
+      api.post("/users/..."),
       { requesterId }
     );
     setRequests(prev => prev.filter(u => u._id !== requesterId));

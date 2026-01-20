@@ -3,7 +3,7 @@ const createWorld = async () => {
     const token = localStorage.getItem("token");
 
     await axios.post(
-      "http://localhost:5000/api/worlds",
+      api.post("/users/..."),
       {
         name,
         isPrivate,

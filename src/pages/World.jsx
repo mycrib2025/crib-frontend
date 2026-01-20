@@ -18,7 +18,7 @@ export default function World() {
     const fetchWorld = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:5000/api/worlds/${worldId}`,
+          api.get("/users/..."),
           {
             headers: { Authorization: `Bearer ${token}` }
           }
@@ -48,7 +48,7 @@ export default function World() {
   const requestAccess = async () => {
     try {
       await axios.post(
-        `http://localhost:5000/api/worlds/${world._id}/request-access`,
+        api.post("/users/..."),
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
