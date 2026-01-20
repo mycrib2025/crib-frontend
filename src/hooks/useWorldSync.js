@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../lib/api";
 
 export default function useWorldSync(userId) {
   const [world, setWorld] = useState(null);
@@ -8,13 +8,13 @@ export default function useWorldSync(userId) {
   useEffect(() => {
     if (!userId) return;
 
-    axios
-      .get(`http://localhost:5000/api/worlds/user/${userId}`)
-      .then(res => {
+    api
+      .get(`/worlds/user/${userId}`)
+      .then((res) => {
         setWorld(res.data[0]);
         setLoading(false);
       })
-      .catch(err => {
+      .catch((err) => {
         console.error("WORLD LOAD ERROR", err);
         setLoading(false);
       });
@@ -24,8 +24,8 @@ export default function useWorldSync(userId) {
     if (!world?._id) return;
 
     try {
-      const res = await axios.put(
-        `http://localhost:5000/api/worlds/${world._id}`,
+      const res = await api.put(
+        `/worlds/${world._id}`,
         updates
       );
       setWorld(res.data);
@@ -38,5 +38,6 @@ export default function useWorldSync(userId) {
     world,
     updateWorld,
     isOwner: world?.owner === userId,
+    loading,
   };
 }
