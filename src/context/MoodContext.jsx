@@ -1,30 +1,24 @@
-import { createContext, useContext, useState } from "react";
-import api from "../api/api";
+import { createContext, useContext, useState, useEffect } from "react";
+import api from "../lib/api";
 
 const MoodContext = createContext();
 
-export const MoodProvider = ({ children }) => {
-  const [mood, setMood] = useState("default");
+export function MoodProvider({ children }) {
+  const [mood, setMood] = useState("calm");
 
-  const changeMood = async (newMood) => {
-    console.log("Mood changed to:", newMood);
-    setMood(newMood);
-
-    // Optional backend save (can fail safely)
-    try {
-      await api.post("/moods", {
-  mood,
-});
-    } catch (error) {
-      console.warn("MOOD SAVE FAILED (safe to ignore for now)");
-    }
-  };
+  useEffect(() => {
+    api.get("/mood")
+      .then(res => setMood(res.data.mood))
+      .catch(() => {});
+  }, []);
 
   return (
-    <MoodContext.Provider value={{ mood, changeMood }}>
+    <MoodContext.Provider value={{ mood, setMood }}>
       {children}
     </MoodContext.Provider>
   );
-};
+}
 
-export const useMood = () => useContext(MoodContext);
+export function useMood() {
+  return useContext(MoodContext);
+}

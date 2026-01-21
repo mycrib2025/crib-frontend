@@ -50,4 +50,35 @@ export default function WorldPreview({ userId }) {
     <span className="text-xs opacity-80">Enter World →</span>
   </div>
 );
+}import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import api from "../lib/api";
+
+import "../styles/worldPreview.css";
+
+export default function WorldPreview({ userId }) {
+  const [world, setWorld] = useState(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!userId) return;
+
+    api.get(`/worlds/user/${userId}`)
+      .then(res => setWorld(res.data[0]))
+      .catch(err => console.error("WORLD PREVIEW ERROR", err));
+  }, [userId]);
+
+  if (!world) {
+    return <div className="world-preview empty">🌌 No world yet</div>;
+  }
+
+  return (
+    <div
+      onClick={() => navigate(`/world/${world._id}`)}
+      className={`world-preview mood-${world.mood}`}
+    >
+      <h3>{world.name || "Untitled World"}</h3>
+      <p>Mood: {world.mood}</p>
+    </div>
+  );
 }
