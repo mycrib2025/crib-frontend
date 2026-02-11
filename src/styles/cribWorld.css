@@ -11,7 +11,7 @@ body {
 .clouds,
 .auroras {
   opacity: 0;
-  transition: opacity 1.5s ease;
+  transition: opacity 1.8s ease-in-out;
 }
 
 /* ========================= */
@@ -38,7 +38,27 @@ body {
   position: relative;
   min-height: 100vh;
   overflow: hidden;
-  transition: background 1.5s ease;
+
+  transition:
+    background 1.4s ease-in-out,
+    filter 1.4s ease-in-out,
+    transform 1.4s ease-in-out;
+
+  will-change: background, filter;
+}
+
+.crib-world::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: inherit;
+  opacity: 0;
+  transition: opacity 1.4s ease-in-out;
+  z-index: 0;
+}
+
+.crib-world {
+  isolation: isolate;
 }
 
 .crib-content {
@@ -163,6 +183,15 @@ body {
   background: linear-gradient(180deg, #fb8500, #ffb703);
 }
 
+.mood-dreamy,
+.mood-fantasy {
+  filter: saturate(1.05) brightness(1.03);
+}
+
+.mood-happy {
+  filter: saturate(1.15) brightness(1.06);
+}
+
 /* ========================= */
 /* 🎞 ANIMATIONS */
 /* ========================= */
@@ -176,4 +205,11 @@ body {
   0% { transform: translateY(0); }
   50% { transform: translateY(-80px); }
   100% { transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
 }

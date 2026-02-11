@@ -1,43 +1,65 @@
-import { useState, useEffect } from "react";
-import api from "../lib/api";
+import { useEffect, useState, useCallback } from "react";
+import api from "../api/api";
 
+/**
+ * World authority hook
+ */
 export default function useWorldSync(userId) {
   const [world, setWorld] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  /* ---------- FETCH WORLD ---------- */
   useEffect(() => {
-    if (!userId) return;
+    let mounted = true;
 
-    api
-      .get(`/worlds/user/${userId}`)
-      .then((res) => {
-        setWorld(res.data[0]);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error("WORLD LOAD ERROR", err);
-        setLoading(false);
-      });
-  }, [userId]);
+    const fetchWorld = async () => {
+      try {
+        const { data } = await api.get("/worlds/me");
+        if (mounted) setWorld(data);
+      } catch (err) {
+        console.error("❌ Failed to fetch world", err);
+      } finally {
+        if (mounted) setLoading(false);
+      }
+    };
 
-  const updateWorld = async (updates) => {
-    if (!world?._id) return;
+    fetchWorld();
 
-    try {
-      const res = await api.put(
-        `/worlds/${world._id}`,
-        updates
-      );
-      setWorld(res.data);
-    } catch (err) {
-      console.error("WORLD UPDATE ERROR", err);
-    }
-  };
+    return () => {
+      mounted = false;
+    };
+  }, []); // 🚨 NO world dependency
+
+  /* ---------- UPDATE WORLD ---------- */
+  const updateWorld = useCallback(
+    async (updates) => {
+      if (!world?._id) return;
+
+      try {
+        const { data } = await api.put(
+          `/worlds/${world._id}`,
+          updates
+        );
+
+        // ✅ replace state (never mutate)
+        setWorld(data);
+      } catch (err) {
+        console.error("❌ World update failed", err);
+      }
+    },
+    [world?._id]
+  );
+
+  /* ---------- OWNERSHIP ---------- */
+  const isOwner =
+    !!world &&
+    (world.owner === userId ||
+      world.owner?._id === userId);
 
   return {
     world,
-    updateWorld,
-    isOwner: world?.owner === userId,
     loading,
+    updateWorld,
+    isOwner,
   };
 }

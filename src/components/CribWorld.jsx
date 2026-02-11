@@ -1,61 +1,63 @@
-import "../styles/cribWorld.css";
-import PulseLines from "./PulseLines";
+import { useEffect, useRef } from "react";
+import { io } from "socket.io-client";
+import useWorldSync from "../hooks/useWorldSync";
 import { useMood } from "../context/MoodContext";
-import { useEffect, useState } from "react";
-import api from "../api/api";
 
-export default function CribWorld({ children, userId }) {
-  const { mood } = useMood();
-  const [world, setWorld] = useState(null);
+export default function CribWorld({ worldId, userId, children }) {
+  const { mood, setMood } = useMood();
+  const { world, updateWorld, isOwner } = useWorldSync(userId);
 
-  /* -------- LOAD WORLD -------- */
+  const socketRef = useRef(null);
+  const lastMoodRef = useRef(null);
+
+  /* 🔌 SOCKET CONNECT */
   useEffect(() => {
-    if (!userId) return;
+    if (!worldId) return;
 
-    api
-      .get(`/worlds/user/${userId}`)
-      .then((res) => setWorld(res.data[0]))
-      .catch((err) => console.error("WORLD LOAD ERROR", err));
-  }, [userId]);
+    const token = localStorage.getItem("token");
 
-  /* -------- SYNC WORLD -------- */
-  const syncWorld = async (data) => {
-    if (!world?._id) return;
+    socketRef.current = io(
+      import.meta.env.VITE_API_URL?.replace("/api", "") ||
+        window.location.origin,
+      { auth: { token } }
+    );
 
-    try {
-      const res = await api.put(`/worlds/${world._id}`, data);
-      setWorld(res.data);
-    } catch (err) {
-      console.error("WORLD SYNC ERROR", err);
-    }
-  };
+    socketRef.current.emit("join-world", { worldId });
 
-  /* -------- MOOD → WORLD -------- */
+    // ✅ backend sends just `mood`, not `{ mood }`
+    socketRef.current.on("world-mood-update", (incomingMood) => {
+      if (incomingMood === mood) return;
+
+      lastMoodRef.current = incomingMood;
+      setMood(incomingMood);
+    });
+
+    return () => {
+      socketRef.current?.off("world-mood-update");
+      socketRef.current?.disconnect();
+    };
+  }, [worldId, mood, setMood]);
+
+  /* 🎭 OWNER → SYNC MOOD */
   useEffect(() => {
-    if (!world?._id) return;
-    if (world.mood === mood) return;
+    if (!world || !isOwner) return;
+    if (mood === lastMoodRef.current) return;
 
-    syncWorld({ mood });
-  }, [mood, world]);
+    lastMoodRef.current = mood;
+
+    updateWorld({ mood });
+
+    socketRef.current?.emit("world-mood-update", {
+      worldId,
+      mood,
+    });
+  }, [mood, world, isOwner, worldId, updateWorld]);
+
+  const activeMood = isOwner ? mood : world?.mood || mood || "calm";
 
   return (
-    <div
-      className={`crib-world mood-${mood}`}
-      style={{
-        "--dream": world?.dreamLevel ?? 50,
-        "--fantasy": world?.fantasyLevel ?? 50,
-      }}
-    >
-      {world?.stars && <div className="crib-layer stars" />}
-      {world?.clouds && <div className="crib-layer clouds" />}
-      {world?.auroras && <div className="crib-layer auroras" />}
-
-      <div className="crib-layer feelings" />
-      <div className="crib-layer dreams" />
-
-      <PulseLines />
-
-      <div className="crib-content">{children}</div>
+    <div className={`min-h-screen crib-world mood-${activeMood}`}>
+      {children}
     </div>
   );
 }

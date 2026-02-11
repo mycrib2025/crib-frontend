@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import api from "../lib/api";
 
-const MoodContext = createContext();
+export const MoodContext = createContext(); // ✅ ADD `export`
 
 export function MoodProvider({ children }) {
   const [mood, setMood] = useState("calm");
