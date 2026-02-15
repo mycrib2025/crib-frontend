@@ -1,6 +1,6 @@
+import api from "../lib/api"; // or correct path
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import axios from "axios";
 import WorldChat from "../components/WorldChat";
 
 import PulseLines from "../components/PulseLines";
@@ -17,12 +17,7 @@ export default function World() {
   useEffect(() => {
     const fetchWorld = async () => {
       try {
-        const res = await axios.get(
-          api.get("/users/..."),
-          {
-            headers: { Authorization: `Bearer ${token}` }
-          }
-        );
+        const res = await api.get(`/worlds/${worldId}`);
 
         setWorld(res.data);
         resolveAccessState(res.data);
@@ -47,11 +42,7 @@ export default function World() {
 
   const requestAccess = async () => {
     try {
-      await axios.post(
-        api.post("/users/..."),
-        {},
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      await api.post(`/worlds/${worldId}/request-access`);
 
       setStatus("pending");
     } catch (err) {
